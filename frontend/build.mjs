@@ -1,0 +1,10 @@
+import {build} from 'esbuild';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
+await mkdir('dist',{recursive:true});
+await build({entryPoints:['src/main.jsx'],bundle:true,minify:true,format:'iife',outfile:'dist/app.js',define:{'process.env.NODE_ENV':'"production"'},legalComments:'none'});
+const html=`<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#5366e3"><meta name="description" content="마음, 쉼 — 익명 고민 나누기와 AI 상담 프론트 미리보기"><title>마음, 쉼 — 마음이 잠시 쉬어가는 곳</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='13' fill='%235366e3'/%3E%3Cpath d='M29 10C14 8 8 17 14 25c8 6 16-2 15-15ZM12 29l12-14' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E"><link rel="stylesheet" href="./app.css"></head><body><div id="root"></div><noscript>화면을 이용하려면 JavaScript를 켜주세요.</noscript><script src="./app.js"></script></body></html>`;
+await writeFile('dist/index.html',html);
+const js=(await readFile('dist/app.js','utf8')).replaceAll('</script','<\\/script');
+const css=await readFile('dist/app.css','utf8');
+await writeFile('dist/maeum.html',html.replace('<link rel="stylesheet" href="./app.css">',`<style>${css}</style>`).replace('<script src="./app.js"></script>',`<script>${js}</script>`));
+console.log('Built React frontend and standalone dist/maeum.html');
