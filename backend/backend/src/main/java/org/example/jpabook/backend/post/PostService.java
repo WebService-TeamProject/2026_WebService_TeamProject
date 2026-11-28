@@ -22,6 +22,10 @@ public class PostService {
         return postRepository.findAllByOrderByCreatedAtDescIdDesc();
     }
 
+    public List<PostResponse> listMyPosts(String email) {
+        return postRepository.findByAuthorEmailOrderByCreatedAtDescIdDesc(email);
+    }
+
     public PostResponse getPost(Long id) {
         return postRepository.findProjectedById(id)
                 .orElseThrow(PostService::postNotFound);

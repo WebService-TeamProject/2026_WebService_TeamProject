@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::spa)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(requests -> requests
+                        .requestMatchers(HttpMethod.GET, "/api/posts/mine").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/posts").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/posts/*").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/posts/*").authenticated()
