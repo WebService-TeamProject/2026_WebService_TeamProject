@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<PostResponse> findAllByOrderByCreatedAtDescIdDesc();
 
+    List<PostResponse> findByAuthorEmailOrderByCreatedAtDescIdDesc(String email);
+
     Optional<PostResponse> findProjectedById(Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

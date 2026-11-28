@@ -30,6 +30,12 @@ public class PostController {
         return postService.listPosts();
     }
 
+    @GetMapping("/mine")
+    @SecurityRequirement(name = "basicAuth")
+    public List<PostResponse> listMyPosts(Principal principal) {
+        return postService.listMyPosts(principal.getName());
+    }
+
     @GetMapping("/{id}")
     public PostResponse getPost(@PathVariable("id") Long id) {
         return postService.getPost(id);

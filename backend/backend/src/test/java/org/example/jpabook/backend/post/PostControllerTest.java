@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -67,6 +68,21 @@ class PostControllerTest {
 
         mockMvc.perform(get("/api/posts/2"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void listsOnlyAuthenticatedUsersPostsWithoutAccountFields() throws Exception {
+        var post = new PostResponse(1L, "학업", "내 글", "예시 본문", Instant.parse("2026-11-28T00:00:00Z"));
+        given(postRepository.findByAuthorEmailOrderByCreatedAtDescIdDesc("owner@example.com"))
+                .willReturn(List.of(post));
+
+        mockMvc.perform(get("/api/posts/mine"))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/api/posts/mine").with(signInAs("owner@example.com")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("내 글"))
+                .andExpect(jsonPath("$[0].userId").doesNotExist())
+                .andExpect(jsonPath("$[0].email").doesNotExist());
     }
 
     @Test
