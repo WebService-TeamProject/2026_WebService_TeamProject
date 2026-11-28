@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS maeum_users (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE maeum_posts ADD COLUMN IF NOT EXISTS user_id BIGINT NULL;
+
+ALTER TABLE maeum_posts
+    ADD CONSTRAINT fk_maeum_posts_author
+    FOREIGN KEY IF NOT EXISTS (user_id) REFERENCES maeum_users (id);
